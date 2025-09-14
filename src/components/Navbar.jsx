@@ -2,7 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { Menu, X } from "lucide-react";
 
-const navLinks = ["Home", "About", "Projects", "Skills", "Contact"];
+const navLinks = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Projects", href: "#projects" },
+  { label: "Skills", href: "#skills" },
+  { label: "Contact", href: "#contact" },
+];
 
 export default function Navbar() {
   const navRef = useRef(null);
@@ -23,6 +29,18 @@ export default function Navbar() {
       }
     );
   }, []);
+  
+  const handleAnchorClick = (e, href) => {
+    if (!href || !href.startsWith('#')) return;
+    const id = href.slice(1);
+    const section = document.getElementById(id);
+    if (!section) return;
+    e.preventDefault();
+    // Use native scrollIntoView so CSS scroll-margin-top applies
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setOpen(false);
+  };
+
   const toggleMenu = () => setOpen(!open);
 
   return (
@@ -43,7 +61,9 @@ export default function Navbar() {
                 key={i}
                 className="hover:text-white transition duration-300 cursor-pointer"
               >
-                {link}
+                <a href={link.href} className="block py-2" onClick={(e) => handleAnchorClick(e, link.href)}>
+                  {link.label}
+                </a>
               </li>
             ))}
           </ul>
@@ -64,7 +84,9 @@ export default function Navbar() {
                 key={i}
                 className="hover:text-white transition duration-300 cursor-pointer"
               >
-                {link}
+                <a href={link.href} className="block py-2" onClick={(e) => handleAnchorClick(e, link.href)}>
+                  {link.label}
+                </a>
               </li>
             ))}
           </ul>

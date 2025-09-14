@@ -1,43 +1,68 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import "../styles/HeroSection.css";
-import bgVideo from "../assets/videos/hero-background.mp4";
+import bgVideo from "../assets/videos/hero-bg.mp4";
 
 export default function HeroSection() {
+  const heroRef = useRef(null);
   const titleRef = useRef(null);
   const descRef = useRef(null);
   const buttonsRef = useRef(null);
-  const containerRef = useRef(null);
+  const videoRef = useRef(null);
 
   useEffect(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-    tl.from(containerRef.current, {
-      opacity: 1,
-      y: 50,
-      duration: 1.2,
-    })
-      .from(titleRef.current, {
-        opacity: 1,
-        y: -30,
-        duration: 1,
-      }, "-=0.8")
-      .from(descRef.current, {
-        opacity: 1,
-        y: 20,
-        duration: 1,
-      }, "-=0.8")
-      .from(buttonsRef.current, {
-        opacity: 1,
-        scale: 0.95,
-        duration: 0.8,
-      }, "-=0.6");
+    // Fade in whole hero first
+    tl.fromTo(
+      heroRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 1 }
+    )
+      // Heading (delayed)
+      .fromTo(
+        titleRef.current,
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 1.2 },
+        "+=0.2" // wait 0.2s
+      )
+      // Description (delayed)
+      .fromTo(
+        descRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1 },
+        "+=0.2" // wait 0.2s
+      )
+      // Buttons (delayed)
+      .fromTo(
+        buttonsRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.9 },
+        "+=0.2" // wait 0.2s
+      );
+
+    // Video slow zoom loop
+    gsap.to(videoRef.current, {
+      scale: 1.1,
+      duration: 20,
+      ease: "none",
+      repeat: -1,
+      yoyo: true,
+    });
+
+    return () => tl.kill();
   }, []);
 
   return (
-    <div className="hero-section relative w-full h-screen overflow-hidden">
+    <section
+      ref={heroRef}
+      id="home"
+      className="hero-section relative w-full h-screen overflow-hidden opacity-0"
+    >
+      {/* Video Background */}
       <video
-        className="hero-video absolute top-0 left-0 w-full h-full object-cover"
+        ref={videoRef}
+        className="absolute top-0 left-0 w-full h-full object-cover will-change-transform"
         autoPlay
         muted
         loop
@@ -47,47 +72,50 @@ export default function HeroSection() {
         Your browser does not support the video tag.
       </video>
 
-      <div
-        className="hero-content relative z-10 flex flex-col items-center justify-center text-center h-full px-4"
-        ref={containerRef}
-      >
+      {/* Overlay */}
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-black/70 via-black/50 to-black/70 z-0" />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center h-full px-6 max-w-5xl mx-auto pt-10">
         <h1
-          className="text-4xl md:text-6xl font-bold text-amber-500 font-sync mb-4"
           ref={titleRef}
+          className="text-4xl md:text-6xl font-bold text-white leading-tight mb-4 tracking-wide font-sync"
         >
-          Hi, I'm Vikram
+          Hi, I’m <span className="text-amber-500">Vikram</span>, a Software Developer
         </h1>
 
         <p
-          className="text-white text-base md:text-lg max-w-2xl leading-relaxed mb-6 font-inter"
           ref={descRef}
+          className="text-white/90 text-base md:text-lg max-w-2xl leading-relaxed mb-8"
         >
-          I'm a passionate <span className="text-amber-500 font-semibold">Frontend Developer</span> 
-          specializing in building responsive, user-friendly web applications. I bring ideas to life 
-          using technologies like <span className="text-amber-500">React.js</span>, 
-          <span className="text-amber-500"> Next.js</span>, <span className="text-amber-500">Redux</span>, 
-          <span className="text-amber-500"> JavaScript</span>, and <span className="text-amber-500">Tailwind CSS</span>.
+          I specialize in building{" "}
+          <span className="text-amber-500 font-medium">
+            modern, high-performance web applications
+          </span>{" "}
+          with
+          <span className="text-amber-500"> React.js</span>,{" "}
+          <span className="text-amber-500">Next.js</span>, and{" "}
+          <span className="text-amber-500">Tailwind</span>.  
+          I focus on creating responsive, user-friendly, and visually stunning
+          digital experiences.
         </p>
 
-        <div className="flex gap-4" ref={buttonsRef}>
+        <div ref={buttonsRef} className="flex gap-4">
           <a
-            href="https://github.com/your-github-username"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-white text-black px-5 py-2 rounded-full font-semibold hover:bg-amber-500 transition duration-300"
+            href="#projects"
+            className="bg-amber-500 text-black px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-white hover:scale-105 transition-transform duration-300"
           >
-            GitHub
+            🚀 View My Work
           </a>
-
           <a
             href="/assets/your-cv.pdf"
             download
-            className="bg-amber-500 text-black px-5 py-2 rounded-full font-semibold hover:bg-white transition duration-300"
+            className="bg-white text-black px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-amber-500 hover:scale-105 transition-transform duration-300"
           >
-            Download CV
+            📄 Download CV
           </a>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
