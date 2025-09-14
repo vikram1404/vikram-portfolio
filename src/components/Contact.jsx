@@ -1,6 +1,9 @@
 import { useRef, useState, useEffect } from "react";
-import { useScrollReveal } from "./utils/useScrollReveal";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MapPin, Mail, Phone, Github, Linkedin } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 import ContactImg from "../assets/images/contact-img.jpg";
 
 export default function ContactSection() {
@@ -70,20 +73,75 @@ export default function ContactSection() {
     return () => clearTimeout(timer);
   }, [result]);
 
-  useScrollReveal([headingRef, infoRef, formRef], {
-    trigger: sectionRef,
-    start: "top 80%",
-    end: "bottom 20%",
-    y: 16,
-    scrub: 0.2,
-    stagger: 0.1,
-  });
+  // Animation setup
+  useEffect(() => {
+    const elements = [
+      headingRef.current,
+      infoRef.current,
+      formRef.current
+    ].filter(Boolean);
+
+    const ctx = gsap.context(() => {
+      // Set initial state
+      gsap.set(elements, { opacity: 0, y: 50 });
+
+      // Function to animate all elements immediately
+      const animateIn = () => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out",
+          overwrite: true
+        });
+      };
+
+      // Set up scroll animations with reset
+      elements.forEach((el, i) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: i * 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top bottom-=100",
+            end: "bottom top+=100",
+            toggleActions: "play reverse play reverse",
+            invalidateOnRefresh: true,
+          },
+        });
+      });
+
+      // Handle hash change
+      const handleHashChange = () => {
+        if (window.location.hash === '#contact') {
+          animateIn();
+        }
+      };
+
+      window.addEventListener('hashchange', handleHashChange);
+      
+      // Check initial hash
+      if (window.location.hash === '#contact') {
+        animateIn();
+      }
+
+      return () => {
+        window.removeEventListener('hashchange', handleHashChange);
+      };
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
       ref={sectionRef}
       id="contact"
-      className="relative w-full py-24 md:py-32 overflow-hidden"
+      className="relative w-full py-16 md:py-24 overflow-hidden"
     >
       <div className="about-overlay absolute inset-0" aria-hidden="true" />
       <div className="about-shape about-shape-1" aria-hidden="true" />
@@ -122,7 +180,7 @@ export default function ContactSection() {
                 <div className="space-y-3 text-white/80">
                   <div className="flex items-start gap-2">
                     <MapPin size={18} className="mt-1 text-amber-500" />{" "}
-                    <span>Your City, Country</span>
+                    <span>Bangalore, Karnataka, India</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <Mail size={18} className="mt-1 text-amber-500" />{" "}
@@ -130,22 +188,22 @@ export default function ContactSection() {
                       href="mailto:you@example.com"
                       className="hover:text-amber-500 transition"
                     >
-                      you@example.com
+                      vikrambind5@gmail.com
                     </a>
                   </div>
                   <div className="flex items-start gap-2">
                     <Phone size={18} className="mt-1 text-amber-500" />{" "}
                     <a
-                      href="tel:+10000000000"
+                      href="tel:+918303505009"
                       className="hover:text-amber-500 transition"
                     >
-                      +1 000 000 0000
+                      +91 8303505009
                     </a>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 mt-5">
                   <a
-                    href="https://github.com/your-github-username"
+                    href="https://github.com/vikram1404"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="GitHub"
@@ -154,7 +212,7 @@ export default function ContactSection() {
                     <Github size={24} />
                   </a>
                   <a
-                    href="https://www.linkedin.com/in/your-linkedin"
+                    href="https://www.linkedin.com/in/vikram-kumar-dev/"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="LinkedIn"
@@ -163,7 +221,7 @@ export default function ContactSection() {
                     <Linkedin size={24} />
                   </a>
                   <a
-                    href="mailto:you@example.com"
+                    href="mailto:vikrambind5@gmail.com"
                     aria-label="Email"
                     className="w-20 h-20 rounded-full bg-white/10 hover:bg-amber-500/90 text-white flex items-center justify-center transition"
                   >

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import "../styles/HeroSection.css";
 import bgVideo from "../assets/videos/hero-bg.mp4";
+import resume from "../assets/vikram.react.dev.pdf";
 
 export default function HeroSection() {
   const heroRef = useRef(null);
@@ -52,6 +53,15 @@ export default function HeroSection() {
 
     return () => tl.kill();
   }, []);
+
+  function handleDownload() {
+  const link = document.createElement("a");
+  link.href = resume;
+  link.download = "Vikram_react_Dev.pdf";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
   return (
     <section
@@ -108,9 +118,9 @@ export default function HeroSection() {
             🚀 View My Work
           </a>
           <a
-            href="/assets/your-cv.pdf"
+           onClick={handleDownload}
             download
-            className="bg-white text-black px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-amber-500 hover:scale-105 transition-transform duration-300"
+            className="bg-white text-black px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-amber-500 hover:scale-105 transition-transform duration-300 cursor-pointer"
           >
             📄 Download CV
           </a>

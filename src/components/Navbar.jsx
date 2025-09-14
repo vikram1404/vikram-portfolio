@@ -47,7 +47,7 @@ export default function Navbar() {
     <header className="fixed top-0 w-full z-[999]">
       <nav
         ref={navRef}
-        className="transform -translate-y-full opacity-0 backdrop-blur-md bg-white/10 border-gray-200 shadow-sm rounded-4xl max-w-7xl mx-auto mt-5 transition-all duration-1000"
+        className="transform -translate-y-full opacity-0 backdrop-blur-md bg-white/10 border-gray-200 shadow-sm rounded-4xl max-w-6xl mx-auto mt-5 transition-all duration-1000"
       >
         <div className=" px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <h1 className="font-sync text-2xl md:text-4xl font-bold tracking-tight text-amber-500 ">

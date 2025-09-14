@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../styles/AboutSection.css";
-import vikramProfile from "../assets/images/vikram-profile.JPG";
+import vikramProfile from "../assets/images/vikram-profile-img1.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,35 +15,86 @@ export default function AboutSection() {
   const imageRef = useRef(null);
 
   useEffect(() => {
+    const elements = [
+      imageRef.current,
+      headingRef.current,
+      contentRef.current,
+      ...listItemsRef.current,
+      ...cardsRef.current
+    ].filter(Boolean);
+
     const ctx = gsap.context(() => {
-      // Function to animate each element with ScrollTrigger
-      const animateFrom = (element, delay = 0) => {
-        gsap.fromTo(
-          element,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            delay,
-            scrollTrigger: {
-              trigger: element,
-              start: "top 85%",
-              toggleActions: "play reverse play reverse",
-              invalidateOnRefresh: true,
-            },
-          }
-        );
+      // Set initial state
+      gsap.set(elements, { opacity: 0, y: 50 });
+
+      // Function to animate all elements
+      const animateIn = () => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out"
+        });
       };
 
-      // Animate each item
-      if (imageRef.current) animateFrom(imageRef.current);
-      if (headingRef.current) animateFrom(headingRef.current, 0.1);
-      if (contentRef.current) animateFrom(contentRef.current, 0.2);
+      // Create scroll triggers
+      elements.forEach(el => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top bottom-=100",
+          onEnter: () => {
+            gsap.to(el, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          },
+          onLeave: () => {
+            gsap.to(el, {
+              opacity: 0,
+              y: 50,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          },
+          onEnterBack: () => {
+            gsap.to(el, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          },
+          onLeaveBack: () => {
+            gsap.to(el, {
+              opacity: 0,
+              y: 50,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          }
+        });
+      });
 
-      listItemsRef.current.forEach((el, i) => animateFrom(el, i * 0.15));
-      cardsRef.current.forEach((el, i) => animateFrom(el, i * 0.2));
+      // Handle hash change
+      const handleHashChange = () => {
+        if (window.location.hash === '#about') {
+          animateIn();
+        }
+      };
+
+      window.addEventListener('hashchange', handleHashChange);
+      
+      // Check initial hash
+      if (window.location.hash === '#about') {
+        animateIn();
+      }
+
+      return () => {
+        window.removeEventListener('hashchange', handleHashChange);
+      };
     }, sectionRef);
 
     return () => ctx.revert();
@@ -53,99 +104,49 @@ export default function AboutSection() {
     <section
       ref={sectionRef}
       id="about"
-      className="about-section relative w-full py-24 md:py-32 overflow-hidden"
+      className="relative w-full py-16 md:py-24 overflow-hidden"
     >
       <div className="about-overlay absolute inset-0" aria-hidden="true" />
       <div className="about-shape about-shape-1" aria-hidden="true" />
       <div className="about-shape about-shape-2" aria-hidden="true" />
-
+      
       <div className="relative z-10 max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 items-start">
-          {/* Left: Description */}
-          <div className="relative z-10 order-2 md:order-1">
-            <h2
-              ref={headingRef}
-              className="text-3xl md:text-5xl font-bold text-amber-500 font-sync mb-4"
-            >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="order-2 lg:order-1">
+            <h2 ref={headingRef} className="text-3xl md:text-5xl font-bold text-amber-500 font-sync mb-6">
               About Me
             </h2>
-            <p
-              ref={contentRef}
-              className="text-white/90 text-base md:text-lg font-inter leading-relaxed mb-6 break-words"
-            >
-              I design and build product-ready interfaces that balance
-              aesthetics with functionality. I care about clean architecture,
-              reusable components, and accessible patterns that scale. Thoughtful
-              micro-interactions and performant motion help users feel in
-              control.
-            </p>
-
-            <ul className="list-disc list-inside text-white/80 font-inter space-y-2">
-              {[
-                "Translating product ideas into modular, scalable UI.",
-                "Collaborating with designers and backend engineers effectively.",
-                "Measuring performance and shipping meaningful improvements.",
-              ].map((item, index) => (
-                <li
-                  key={index}
-                  ref={(el) => (listItemsRef.current[index] = el)}
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Middle: Circular Profile */}
-          <div className="flex justify-center order-1 md:order-2">
-            <div
-              ref={imageRef}
-              className="about-portrait relative w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden ring-1 ring-white/10 bg-white/5"
-            >
-              <img
-                src={vikramProfile}
-                alt="Vikram portrait"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-              <div className="about-portrait-glow" aria-hidden="true" />
+            <div ref={contentRef} className="text-white/80 font-inter space-y-4">
+              <p>
+                Passionate Frontend Developer with a keen eye for design and a commitment to creating seamless, user-centric web experiences. I specialize in building responsive, performant applications using modern JavaScript frameworks and libraries.
+              </p>
+              <p>
+                With a strong foundation in both design principles and technical implementation, I bridge the gap between aesthetics and functionality to deliver compelling digital solutions.
+              </p>
+            </div>
+            <div className="mt-6 space-y-4">
+              <div ref={el => listItemsRef.current[0] = el} className="flex items-center gap-2">
+                <span className="w-12 h-12 rounded-lg bg-amber-500 text-black flex items-center justify-center text-xl font-bold">2+</span>
+                <span className="text-white/80">Years of Experience</span>
+              </div>
+              <div ref={el => listItemsRef.current[1] = el} className="flex items-center gap-2">
+                <span className="w-12 h-12 rounded-lg bg-amber-500 text-black flex items-center justify-center text-xl font-bold">10+</span>
+                <span className="text-white/80">Projects Completed</span>
+              </div>
             </div>
           </div>
-
-          {/* Right: Cards */}
-          <div className="order-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-6 md:gap-8 items-stretch">
-              {[
-                {
-                  title: "Experience",
-                  desc: "2+ years crafting responsive apps, design systems, and tooling.",
-                },
-                {
-                  title: "Stack",
-                  desc: "React, Next.js, Redux, TypeScript, Tailwind CSS, GSAP.",
-                },
-                {
-                  title: "Focus",
-                  desc: "Performance, accessibility, and purposeful animations.",
-                },
-              ].map((item, index) => (
-                <div
-                  key={item.title}
-                  ref={(el) => (cardsRef.current[index] = el)}
-                  className="about-card rounded-2xl p-6 border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition duration-300 h-full"
-                >
-                  <h3 className="text-xl md:text-2xl font-semibold text-amber-500 font-sync mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-white/80 font-inter">{item.desc}</p>
-                </div>
-              ))}
+          <div ref={imageRef} className="order-1 lg:order-2">
+            <div className="relative w-full max-w-md mx-auto aspect-square rounded-full overflow-hidden shadow-xl">
+              <img
+                src={vikramProfile}
+                alt="Vikram's profile"
+                className="w-full h-full object-cover"
+                loading="eager"
+              />
             </div>
           </div>
         </div>
       </div>
-
-      <div className="about-glow" aria-hidden="true" />
     </section>
   );
 }

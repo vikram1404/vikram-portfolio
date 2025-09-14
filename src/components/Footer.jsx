@@ -27,13 +27,13 @@ export default function FooterSection() {
               motion. I build modular systems that scale.
             </p>
             <div className="flex items-center gap-3 mt-5">
-              <a href="https://github.com/your-github-username" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="w-10 h-10 rounded-full bg-white/10 hover:bg-amber-500/90 text-white flex items-center justify-center transition">
+              <a href="https://github.com/vikram1404" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="w-10 h-10 rounded-full bg-white/10 hover:bg-amber-500/90 text-white flex items-center justify-center transition">
                 <Github size={18} />
               </a>
-              <a href="https://www.linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-10 h-10 rounded-full bg-white/10 hover:bg-amber-500/90 text-white flex items-center justify-center transition">
+              <a href="https://www.linkedin.com/in/vikram-kumar-dev/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-10 h-10 rounded-full bg-white/10 hover:bg-amber-500/90 text-white flex items-center justify-center transition">
                 <Linkedin size={18} />
               </a>
-              <a href="mailto:you@example.com" aria-label="Email" className="w-10 h-10 rounded-full bg-white/10 hover:bg-amber-500/90 text-white flex items-center justify-center transition">
+              <a href="mailto:vikrambind5@gmail.com" aria-label="Email" className="w-10 h-10 rounded-full bg-white/10 hover:bg-amber-500/90 text-white flex items-center justify-center transition">
                 <Mail size={18} />
               </a>
             </div>
@@ -55,8 +55,8 @@ export default function FooterSection() {
           <div className="md:ml-auto">
             <h4 className="text-white/90 font-semibold mb-3">Contact</h4>
             <ul className="space-y-2 text-white/70">
-              <li>Email: <a href="mailto:you@example.com" className="hover:text-amber-500 transition">you@example.com</a></li>
-              <li>Location: Your City, Country</li>
+              <li>Email: <a href="mailto:vikrambind5@gmail.com" className="hover:text-amber-500 transition">you@example.com</a></li>
+              <li>Location: Bangalore, Karnataka, India</li>
               <li>Availability: Open to work</li>
             </ul>
           </div>

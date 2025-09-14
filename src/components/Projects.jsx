@@ -1,71 +1,136 @@
-import { useRef } from "react";
-import { useScrollReveal } from "./utils/useScrollReveal";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import zekstaImg from "../assets/images/zeksta-img.png";
+import ray from "../assets/images/rayinsuretech.png";
+import flaq from "../assets/images/flaq.png";
+import ememories from "../assets/images/ememories.png";
+import buchipay from "../assets/images/buchipay.png";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ProjectsSection() {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
-  const gridRef = useRef(null);
 
-  // Smooth animations for heading
-  useScrollReveal([headingRef], {
-    trigger: sectionRef,
-    start: "top 90%",
-    end: "bottom 10%",
-    y: 40,
-    scrub: 1,
-    opacity: 0,
-    ease: "power3.out",
-  });
+  useEffect(() => {
+    const elements = [
+      headingRef.current,
+      ...document.querySelectorAll('.project-card')
+    ].filter(Boolean);
 
-  // Smooth staggered animations for cards
-  useScrollReveal([], {
-    trigger: sectionRef,
-    targetsSelector: ".project-card",
-    start: "top 90%",
-    end: "bottom 10%",
-    y: 40,
-    scrub: 1,
-    opacity: 0,
-    stagger: 0.2,
-    ease: "power3.out",
-  });
+    const ctx = gsap.context(() => {
+      // Set initial state
+      gsap.set(elements, { opacity: 0, y: 50 });
+
+      // Function to animate all elements
+      const animateIn = () => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out"
+        });
+      };
+
+      // Create scroll triggers
+      elements.forEach(el => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top bottom-=100",
+          onEnter: () => {
+            gsap.to(el, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          },
+          onLeave: () => {
+            gsap.to(el, {
+              opacity: 0,
+              y: 50,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          },
+          onEnterBack: () => {
+            gsap.to(el, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          },
+          onLeaveBack: () => {
+            gsap.to(el, {
+              opacity: 0,
+              y: 50,
+              duration: 0.8,
+              ease: "power2.out"
+            });
+          }
+        });
+      });
+
+      // Handle hash change
+      const handleHashChange = () => {
+        if (window.location.hash === '#projects') {
+          animateIn();
+        }
+      };
+
+      window.addEventListener('hashchange', handleHashChange);
+      
+      // Check initial hash
+      if (window.location.hash === '#projects') {
+        animateIn();
+      }
+
+      return () => {
+        window.removeEventListener('hashchange', handleHashChange);
+      };
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const projects = [
     {
       title: "Ray Insuretech Website",
       desc: "Designed and developed a multi-role insurance claims investigation platform that supports Super Admin, Admin, Employee, and User roles. Implemented secure file storage and retrieval using AWS S3 and built custom APIs with Node.js to ensure high security and performance. Integrated role-based access control to protect sensitive workflows and optimized the platform for desktop and mobile users using Tailwind CSS.",
       tags: ["Next.js", "PostgreSQL", "Node.js", "AWS S3", "Tailwind"],
-      img: "/projects/ray-insuretech.jpg",
-      demo: "#",
+      img: ray,
+      demo: "https://clue-spytech-app.vercel.app/",
     },
     {
       title: "eMemories – Digital Tribute Platform",
       desc: "A full-stack tribute and memorial platform enabling users to create personalized digital tributes with subscription-based access to premium features. Developed secure authentication with local storage and APIs, implemented dynamic themes and image/video upload capabilities, and built an engaging, fully responsive user experience using Tailwind CSS.",
       tags: ["Next.js", "Redux", "PostgreSQL", "Node.js", "Tailwind"],
-      img: "/projects/ememories.jpg",
-      demo: "#",
+      img: ememories,
+      demo: "http://ememories.in/",
     },
     {
       title: "Buchipay – Fintech Dashboard",
       desc: "Developed a fintech dashboard that supports role-based access, service management, and real-time data visualization. Built reusable React components to accelerate feature development and integrated Material Tailwind for a clean and intuitive interface. Focused on optimizing dashboard performance for large datasets and ensuring scalability.",
       tags: ["React.js", "React Native", "Material Tailwind", "Tailwind"],
-      img: "/projects/buchipay.jpg",
-      demo: "#",
+      img: buchipay,
+      demo: "https://buchipay.in/",
     },
     {
       title: "Zeksta Website",
       desc: "Built a fully responsive corporate website for Zeksta Technologies with a modern design, reusable Next.js components, and Tailwind-based styling. Focused on SEO optimization, fast page loads, and smooth navigation, delivering a polished web presence for the brand.",
       tags: ["Next.js", "Tailwind"],
       img: zekstaImg,
-      demo: "#",
+      demo: "https://www.zeksta.com/",
     },
     {
       title: "FLAQ Website",
       desc: "Developed the FLAQ company website, implementing modular UI components and consistent design across pages. Prioritized responsive layouts and accessibility to ensure an inclusive user experience on all devices, improving engagement and usability.",
       tags: ["Next.js", "Tailwind"],
-      img: "/projects/flaq.jpg",
-      demo: "#",
+      img: flaq,
+      demo: "http://flaqit.com/",
     },
   ];
 
@@ -73,7 +138,7 @@ export default function ProjectsSection() {
     <section
       ref={sectionRef}
       id="projects"
-      className="relative w-full py-24 md:py-32 overflow-hidden"
+      className="relative w-full py-16 md:py-24 overflow-hidden"
     >
       <div className="about-overlay absolute inset-0" aria-hidden="true" />
       <div className="about-shape about-shape-1" aria-hidden="true" />
@@ -88,7 +153,6 @@ export default function ProjectsSection() {
         </h2>
 
         <div
-          ref={gridRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         >
           {projects.map((p) => (
