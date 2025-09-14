@@ -31,7 +31,7 @@ export function useScrollReveal(refs, options = {}) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: triggerElement,
-          start: options.start || "top 80%",
+          start: options.start || "top 95%",
           end: options.end || "bottom 20%",
           scrub: options.scrub === true ? 0.6 : options.scrub,
           markers: options.markers || false,
@@ -67,7 +67,7 @@ export function useScrollReveal(refs, options = {}) {
           immediateRender: false,
           scrollTrigger: {
             trigger: triggerElement,
-            start: options.start || "top 80%",
+            start: options.start || "top 95%",
             end: options.end || "bottom 20%",
             toggleActions: "play reverse play reverse",
             markers: options.markers || false,
