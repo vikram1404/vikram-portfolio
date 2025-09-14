@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MapPin, Mail, Phone, Github, Linkedin } from "lucide-react";
@@ -29,8 +29,10 @@ export default function ContactSection() {
 
     const nextErrors = {};
     if (!name) nextErrors.name = "Name is required";
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = "Valid email is required";
-    if (!message || message.length < 10) nextErrors.message = "Message should be at least 10 characters";
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      nextErrors.email = "Valid email is required";
+    if (!message || message.length < 10)
+      nextErrors.message = "Message should be at least 10 characters";
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
       return;
@@ -63,7 +65,7 @@ export default function ContactSection() {
     }
   };
 
-  // Auto-clear result message after a short delay
+  // Auto-clear message
   useEffect(() => {
     if (!result) return;
     const timer = setTimeout(() => {
@@ -73,7 +75,7 @@ export default function ContactSection() {
     return () => clearTimeout(timer);
   }, [result]);
 
-  // Animation setup
+  // Scroll animations
   useEffect(() => {
     const elements = [
       headingRef.current,
@@ -85,33 +87,55 @@ export default function ContactSection() {
       // Set initial state
       gsap.set(elements, { opacity: 0, y: 50 });
 
-      // Function to animate all elements immediately
+      // Function to animate elements
       const animateIn = () => {
         gsap.to(elements, {
           opacity: 1,
           y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power2.out",
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
           overwrite: true
         });
       };
 
-      // Set up scroll animations with reset
-      elements.forEach((el, i) => {
-        gsap.to(el, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          delay: i * 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top bottom-=100",
-            end: "bottom top+=100",
-            toggleActions: "play reverse play reverse",
-            invalidateOnRefresh: true,
+      // Create scroll triggers for each element
+      elements.forEach((el) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top bottom-=100",
+          onEnter: () => {
+            gsap.to(el, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power3.out"
+            });
           },
+          onLeave: () => {
+            gsap.to(el, {
+              opacity: 0,
+              y: 50,
+              duration: 0.8,
+              ease: "power3.out"
+            });
+          },
+          onEnterBack: () => {
+            gsap.to(el, {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power3.out"
+            });
+          },
+          onLeaveBack: () => {
+            gsap.to(el, {
+              opacity: 0,
+              y: 50,
+              duration: 0.8,
+              ease: "power3.out"
+            });
+          }
         });
       });
 
@@ -126,7 +150,7 @@ export default function ContactSection() {
       
       // Check initial hash
       if (window.location.hash === '#contact') {
-        animateIn();
+        setTimeout(animateIn, 100);
       }
 
       return () => {
@@ -155,10 +179,10 @@ export default function ContactSection() {
           Contact
         </h2>
 
-        {/* Parent container card */}
+        {/* Parent container */}
         <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden h-full">
           <div className="grid grid-cols-1 md:grid-cols-2 items-stretch h-full">
-            {/* Left: Background image panel with address & socials (with icons) */}
+            {/* Left: Info Panel */}
             <aside
               ref={infoRef}
               className="relative h-full py-20"
@@ -185,7 +209,7 @@ export default function ContactSection() {
                   <div className="flex items-start gap-2">
                     <Mail size={18} className="mt-1 text-amber-500" />{" "}
                     <a
-                      href="mailto:you@example.com"
+                      href="mailto:vikrambind5@gmail.com"
                       className="hover:text-amber-500 transition"
                     >
                       vikrambind5@gmail.com
@@ -231,7 +255,7 @@ export default function ContactSection() {
               </div>
             </aside>
 
-            {/* Right: Form */}
+            {/* Right: Contact Form */}
             <form
               onSubmit={onSubmit}
               ref={formRef}
@@ -241,7 +265,7 @@ export default function ContactSection() {
                 type="hidden"
                 name="access_key"
                 value="b12fc25e-7e74-41b8-9be3-33502982567e"
-              ></input>
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <input
@@ -251,10 +275,14 @@ export default function ContactSection() {
                     required
                     aria-invalid={!!errors.name}
                     aria-describedby={errors.name ? "err-name" : undefined}
-                    className={`w-full bg-white/5 border ${errors.name ? "border-red-500" : "border-white/10"} rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500`}
+                    className={`w-full bg-white/5 border ${
+                      errors.name ? "border-red-500" : "border-white/10"
+                    } rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500`}
                   />
                   {errors.name && (
-                    <p id="err-name" className="mt-1 text-red-400 text-sm">{errors.name}</p>
+                    <p id="err-name" className="mt-1 text-red-400 text-sm">
+                      {errors.name}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -274,13 +302,16 @@ export default function ContactSection() {
                   required
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? "err-email" : undefined}
-                  className={`w-full bg-white/5 border ${errors.email ? "border-red-500" : "border-white/10"} rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500`}
+                  className={`w-full bg-white/5 border ${
+                    errors.email ? "border-red-500" : "border-white/10"
+                  } rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500`}
                 />
                 {errors.email && (
-                  <p id="err-email" className="mt-1 text-red-400 text-sm">{errors.email}</p>
+                  <p id="err-email" className="mt-1 text-red-400 text-sm">
+                    {errors.email}
+                  </p>
                 )}
               </div>
-
               <div>
                 <textarea
                   rows="6"
@@ -289,26 +320,57 @@ export default function ContactSection() {
                   required
                   aria-invalid={!!errors.message}
                   aria-describedby={errors.message ? "err-message" : undefined}
-                  className={`w-full bg-white/5 border ${errors.message ? "border-red-500" : "border-white/10"} rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500`}
+                  className={`w-full bg-white/5 border ${
+                    errors.message ? "border-red-500" : "border-white/10"
+                  } rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500`}
                 />
                 {errors.message && (
-                  <p id="err-message" className="mt-1 text-red-400 text-sm">{errors.message}</p>
+                  <p id="err-message" className="mt-1 text-red-400 text-sm">
+                    {errors.message}
+                  </p>
                 )}
               </div>
               <button
                 type="submit"
                 disabled={submitting}
-                className={`flex items-center justify-center gap-2 cursor-pointer ${submitting ? "opacity-80 cursor-not-allowed" : ""} bg-amber-500 text-black px-5 py-2 rounded-full font-semibold hover:bg-white transition duration-300`}
+                className={`flex items-center justify-center gap-2 cursor-pointer ${
+                  submitting ? "opacity-80 cursor-not-allowed" : ""
+                } bg-amber-500 text-black px-5 py-2 rounded-full font-semibold hover:bg-white transition duration-300`}
               >
                 {submitting && (
-                  <svg className="animate-spin h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  <svg
+                    className="animate-spin h-4 w-4 text-black"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
                   </svg>
                 )}
                 {submitting ? "Sending..." : "Send"}
               </button>
-              <span className={`block text-sm mt-2 ${resultType === "success" ? "text-green-400" : resultType === "error" ? "text-red-400" : "text-white/70"}`}>
+              <span
+                className={`block text-sm mt-2 ${
+                  resultType === "success"
+                    ? "text-green-400"
+                    : resultType === "error"
+                    ? "text-red-400"
+                    : "text-white/70"
+                }`}
+              >
                 {result}
               </span>
             </form>

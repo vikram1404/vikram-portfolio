@@ -25,7 +25,38 @@ html {
 	overflow-x: hidden;
 }
 
-/* Provide space so anchor targets aren't hidden behind fixed navbar */
+/* Base section styles */
+section {
+  position: relative;
+  min-height: 100vh;
+  opacity: 1 !important; /* Ensure sections are always visible */
+  transform: none !important; /* Prevent transform from hiding content */
+}
+
+/* Header offset and scroll behavior */
 [id] {
-	scroll-margin-top: 96px; /* header height approx */
+  scroll-margin-top: 100px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+/* Animation container styles */
+.animate-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.animate-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ensure content is initially visible when directly navigating */
+:target {
+  opacity: 1 !important;
+  transform: none !important;
 }
